@@ -118,21 +118,25 @@ Parse the hunch into a testable hypothesis (same structure as Quick Step 1). Sha
 
 #### 1b. Create Skeptic Team
 
-Use TeamCreate. Read `roles.md` for full role definitions.
+Use TeamCreate to create the team (e.g., `team_name: "investigate-{project-name}"`). Then spawn each skeptic as a teammate using the Agent tool with the `team_name` parameter and a descriptive `name`. Read `roles.md` for the system prompts to include in each teammate's spawn prompt.
 
 **Standard** (3 skeptics):
-- Team Lead (orchestration, synthesis)
-- Strategic Skeptic (market dynamics, timing, competitive landscape)
-- Methodologist (testability, evidence design, null hypothesis)
-- Builder (technical feasibility, capability gaps, prior art)
+```
+TeamCreate: team_name="investigate-{project}"
+Agent: name="strategic-skeptic", team_name="investigate-{project}", prompt=[from roles.md]
+Agent: name="methodologist", team_name="investigate-{project}", prompt=[from roles.md]
+Agent: name="builder", team_name="investigate-{project}", prompt=[from roles.md]
+```
 
 **Deep** (4 skeptics — add Data Scientist):
-- All of the above, plus:
-- Data Scientist (base rates, statistical power, data availability)
+```
+Same as above, plus:
+Agent: name="data-scientist", team_name="investigate-{project}", prompt=[from roles.md]
+```
 
 #### 1c. Initial Takes (Parallel)
 
-Send the framed hypothesis to all skeptics simultaneously. Each skeptic:
+Send the framed hypothesis to all skeptics via SendMessage (use `recipient` = teammate name). Each skeptic:
 - Analyzes through their lens (see `roles.md` for detailed prompts)
 - Runs web searches (5-8 per agent at standard, 10+ at deep)
 - Produces a written position with evidence and source quality tags
@@ -140,7 +144,7 @@ Send the framed hypothesis to all skeptics simultaneously. Each skeptic:
 
 #### 1d. Debate
 
-**Stage: Cross-Pollination**. Team lead compiles ALL initial takes and sends the full compilation to ALL skeptics via SendMessage.
+**Stage: Cross-Pollination**. Team lead compiles ALL initial takes and sends the full compilation to ALL skeptics via SendMessage (use `type: "message"`, `recipient: "{skeptic-name}"` for each, or `type: "broadcast"` to send to all at once).
 
 Each skeptic reads all peer arguments and responds:
 - Challenge specific claims from other skeptics
@@ -171,7 +175,7 @@ Present via AskUserQuestion per `shared/gate-logic.md`:
 
 **Redirect handling**: Team lead re-synthesizes with PM's new direction. Skeptics do NOT re-run. Re-present gate. If PM redirects twice on the same gate, suggest Kill + restart.
 
-**Kill handling**: Save partial work, add `_killed_at_gate_1.md` suffix, clean up team.
+**Kill handling**: Save partial work, add `_killed_at_gate_1.md` suffix, send shutdown requests to all teammates via `SendMessage type: "shutdown_request"`, then `TeamDelete`.
 
 ---
 

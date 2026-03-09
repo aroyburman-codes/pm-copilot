@@ -74,6 +74,23 @@ Each skill works standalone. When used in sequence, later skills auto-detect ear
 
 ## Installation
 
+### Prerequisites
+
+PM Copilot uses [Claude Code agent teams](https://code.claude.com/docs/en/agent-teams) at standard/deep depth. Agent teams are experimental and must be enabled:
+
+```json
+// Add to your settings.json (or .claude/settings.json in your project)
+{
+  "env": {
+    "CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS": "1"
+  }
+}
+```
+
+Quick mode works without agent teams (single-agent, no team spawning).
+
+### Install Skills
+
 ```bash
 # Clone the repo
 git clone https://github.com/aroyburman-codes/pm-copilot.git
@@ -319,6 +336,7 @@ Bad Strategy Check, and Recommendation]
 ## Requirements
 
 - [Claude Code](https://docs.anthropic.com/en/docs/claude-code) CLI
+- `CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS` enabled (for standard/deep depth — see [Installation](#prerequisites))
 - Python 3.8+ (for DS computational analysis at standard/deep depth)
 - At standard+ depth, the skill auto-installs numpy, pandas, matplotlib, scipy if not present
 

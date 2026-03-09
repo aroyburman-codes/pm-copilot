@@ -69,14 +69,16 @@ Uses TeamCreate with agent teams, skeptic panels, and debate.
 
 **Goal**: Construct the core argument and anticipate objections.
 
-**Team creation** via TeamCreate:
+**Team creation** via TeamCreate, then spawn teammates via Agent tool with `team_name`:
 
-| Role | Model | Purpose |
-|------|-------|---------|
-| Team Lead | Opus | Argument construction, synthesis, orchestration |
-| Approver Lens | Sonnet | See `roles.md` — decision-maker perspective |
-| Alternatives | Sonnet | See `roles.md` — competing priorities, opportunity cost |
-| Feasibility | Sonnet | See `roles.md` — deliverability, dependencies, risks |
+```
+TeamCreate: team_name="propose-{project}"
+Agent: name="approver-lens", team_name="propose-{project}", prompt=[from roles.md]
+Agent: name="alternatives", team_name="propose-{project}", prompt=[from roles.md]
+Agent: name="feasibility", team_name="propose-{project}", prompt=[from roles.md]
+```
+
+Deep mode adds: `Agent: name="true-cost", team_name="propose-{project}", prompt=[from roles.md]`
 
 Create tasks via TaskCreate to track progress through phases.
 
@@ -170,7 +172,7 @@ options:
     description: "Stop. Document saved as-is to the project folder."
 ```
 
-Cleanup: TeamDelete after final gate resolution.
+Cleanup: Send shutdown requests to all teammates via `SendMessage type: "shutdown_request"`, then TeamDelete.
 
 ---
 

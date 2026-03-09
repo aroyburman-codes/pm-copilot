@@ -61,9 +61,19 @@ Present via AskUserQuestion per `shared/gate-logic.md`:
 
 ### Team Setup
 
-Use TeamCreate to build the team:
+Use TeamCreate to create the team (e.g., `team_name: "strategize-{project-name}"`). Then spawn each teammate using the Agent tool with the `team_name` parameter and a descriptive `name`. Load role definitions from `roles.md` and include them in each teammate's spawn prompt.
+
+```
+TeamCreate: team_name="strategize-{project}"
+Agent: name="investor-skeptic", team_name="strategize-{project}", prompt=[from roles.md]
+Agent: name="pm-skeptic", team_name="strategize-{project}", prompt=[from roles.md]
+Agent: name="builder-skeptic", team_name="strategize-{project}", prompt=[from roles.md]
+```
+
+Deep mode adds: `Agent: name="data-scientist", team_name="strategize-{project}", prompt=[from roles.md]`
+
 - **Team Lead** (Opus): Orchestration, Rumelt kernel enforcement, synthesis, gates
-- **Skeptics and specialists** are defined in `roles.md` — load role definitions from that file
+- **Skeptics and specialists** are defined in `roles.md`
 
 ### Phase 1: Diagnose
 
@@ -135,7 +145,7 @@ If Gate 2 fires:
 Save full document to `./pm-workflow/{project-name}/strategy-{project-name}.md` using the template from `templates.md`.
 
 ### Cleanup
-After Gate 3 resolves (Proceed or Kill), run TeamDelete to clean up the agent team.
+After Gate 3 resolves (Proceed or Kill), send shutdown requests to all teammates via `SendMessage type: "shutdown_request"`, then run TeamDelete to clean up the agent team.
 
 ---
 
